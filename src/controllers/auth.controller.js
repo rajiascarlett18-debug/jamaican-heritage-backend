@@ -32,7 +32,9 @@ exports.register = async (req, res) => {
 
     res.status(201).json({
       id: result.insertId,
-      token: generateToken(result.insertId)
+      name,
+      email,
+      token: generateToken({ id: result.insertId }) // ✅ FIXED
     });
 
   } catch (error) {
@@ -70,7 +72,7 @@ exports.login = async (req, res) => {
       id: user.id,
       name: user.name,
       email: user.email,
-      token: generateToken(user.id)
+      token: generateToken({ id: user.id }) // ✅ FIXED
     });
 
   } catch (error) {
@@ -79,12 +81,12 @@ exports.login = async (req, res) => {
   }
 };
 
+
 /* =========================
    GET CURRENT USER
 ========================= */
 exports.getMe = async (req, res) => {
   try {
-
     const [users] = await pool.query(
       "SELECT id, name, email FROM users WHERE id = ?",
       [req.user.id]
